@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/diamondburned/gotk4/pkg/gtk/v4"
 	"github.com/diamondburned/gotk4/pkg/gio/v2"
+	"github.com/diamondburned/gotk4/pkg/gtk/v4"
 )
 
 func main() {
@@ -21,5 +21,5 @@ func activate(app *gtk.Application) {
 	window.SetTitle("gotk4 Example")
 	window.SetChild(gtk.NewLabel("Hello from Go!"))
 	window.SetDefaultSize(400, 300)
-	window.Show()
+	window.SetVisible(true)
 }
