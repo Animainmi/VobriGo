@@ -50,7 +50,6 @@ func activate(app *gtk.Application) {
 func loadCSS(content string) *gtk.CSSProvider {
 	prov := gtk.NewCSSProvider()
 	prov.ConnectParsingError(func(sec *gtk.CSSSection, err error) {
-		// Optional line parsing routine.
 		loc := sec.StartLocation()
 		lines := strings.Split(content, "\n")
 		log.Printf("CSS error (%v) at line: %q", err, lines[loc.Lines()])
