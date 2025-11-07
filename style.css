@@ -1,0 +1,8 @@
+window {
+	background-color: black;
+	color: white;
+	font-size: 9pt;
+	box-shadow: none;
+	border: 1px solid white;
+	border-radius: 10px;
+}
