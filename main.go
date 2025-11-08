@@ -2,8 +2,10 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/diamondburned/gotk4-layer-shell/pkg/gtk4layershell"
@@ -34,17 +36,46 @@ func activate(app *gtk.Application) {
 		gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
 	)
 
-	popover := gtk.NewPopover()
 	appwin := gtk.NewApplicationWindow(app)
 	window := &appwin.Window
+	mainBox := gtk.NewCenterBox()
+
+	BrightnessAdjustment := gtk.NewAdjustment(50, 0, 100, 1, 0, 0)
+	VolumeAdjustment := gtk.NewAdjustment(50, 0, 100, 1, 0, 0)
+
+	BriScale := gtk.NewScale(gtk.OrientationHorizontal, BrightnessAdjustment)
+	VoScale := gtk.NewScale(gtk.OrientationHorizontal, VolumeAdjustment)
+
+	BriScale.SetHExpand(true)
+	BriScale.ConnectValueChanged(func() {
+		brightnessFormatted := fmt.Sprintf("%d%", int(BrightnessAdjustment.Value()))
+		cmd := exec.Command("brightnessctl", "set", brightnessFormatted)
+		cmd.Run()
+	})
+
+	VoScale.SetHExpand(true)
+	VoScale.ConnectValueChanged(func() {
+		volumeFormatted := fmt.Sprintf("%d%%", int(VolumeAdjustment.Value()))
+		cmd := exec.Command("pactl", "set-sink-volume", "@DEFAULT_SINK@", volumeFormatted)
+		cmd.Run()
+	})
+
+	mainBox.SetEndWidget(BriScale)
+	mainBox.SetStartWidget(VoScale)
+
 	window.SetTitle("gotk4 Example")
-	window.SetChild(popover)
+	window.SetChild(mainBox)
+
 	window.SetDefaultSize(700, 25)
 	window.SetVisible(true)
 
 	gtk4layershell.InitForWindow(window)
 	gtk4layershell.SetLayer(window, gtk4layershell.LayerShellLayerTop)
 	gtk4layershell.SetAnchor(window, gtk4layershell.LayerShellEdgeTop, true)
+}
+
+func scale_moved() {
+	log.Println("LMAO")
 }
 
 func loadCSS(content string) *gtk.CSSProvider {

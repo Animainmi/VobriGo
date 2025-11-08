@@ -1,8 +1,25 @@
 window {
+  all:unset;
 	background-color: black;
 	color: white;
 	font-size: 9pt;
 	box-shadow: none;
 	border: 1px solid white;
 	border-radius: 10px;
+}
+
+scale trough {
+  all: unset;
+  min-height: 10px;
+}
+
+scale highlight {
+  all: unset;
+  background-color: white;
+  min-height: 10px;
+}
+
+scale slider {
+  all: unset;
+  margin: 0;
 }
