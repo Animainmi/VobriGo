@@ -18,7 +18,7 @@ import (
 var styleCSS string
 
 func main() {
-	app := gtk.NewApplication("com.github.animainmi.VoBriGo", gio.ApplicationFlagsNone)
+	app := gtk.NewApplication("com.github.animainmi.VobriGo", gio.ApplicationFlagsNone)
 	app.ConnectActivate(func() { activate(app) })
 
 	if code := app.Run(os.Args); code > 0 {
@@ -70,6 +70,12 @@ func activate(app *gtk.Application) {
 		brightnessFormatted := fmt.Sprintf("%d%%", int(BrightnessAdjustment.Value()))
 		cmd := exec.Command("brightnessctl", "set", brightnessFormatted)
 		cmd.Run()
+		realBri := exec.Command("brightnessctl", "get")
+		out, err := realBri.Output()
+		if err != nil {
+			log.Fatalf("Failed to execute command: %v", err)
+		}
+		fmt.Println(string(out))
 	})
 
 	VoScale.SetHExpand(true)
