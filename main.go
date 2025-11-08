@@ -48,7 +48,7 @@ func activate(app *gtk.Application) {
 
 	BriScale.SetHExpand(true)
 	BriScale.ConnectValueChanged(func() {
-		brightnessFormatted := fmt.Sprintf("%d%", int(BrightnessAdjustment.Value()))
+		brightnessFormatted := fmt.Sprintf("%d%%", int(BrightnessAdjustment.Value()))
 		cmd := exec.Command("brightnessctl", "set", brightnessFormatted)
 		cmd.Run()
 	})
