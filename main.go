@@ -96,6 +96,7 @@ func activate(app *gtk.Application) {
 
 	gtk4layershell.InitForWindow(window)
 	gtk4layershell.SetLayer(window, gtk4layershell.LayerShellLayerTop)
+	gtk4layershell.AutoExclusiveZoneEnable(window)
 	gtk4layershell.SetAnchor(window, gtk4layershell.LayerShellEdgeTop, true)
 }
 
