@@ -42,25 +42,6 @@ func activate(app *gtk.Application) {
 	window := &appwin.Window
 	mainBox := gtk.NewCenterBox()
 
-	menu := gio.NewMenu()
-	menu.Append("Item 1", "app.item1")
-	menu.Append("Item 2", "app.item2")
-	menu.Append("Item 3", "app.item3")
-
-	action1 := gio.NewSimpleAction("item1", nil)
-	action2 := gio.NewSimpleAction("item2", nil)
-	action3 := gio.NewSimpleAction("item3", nil)
-
-	app.AddAction(action1)
-	app.AddAction(action2)
-	app.AddAction(action3)
-
-	popoverMenu := gtk.NewPopoverMenuFromModel(menu)
-
-	menuButton := gtk.NewMenuButton()
-
-	menuButton.SetPopover(popoverMenu)
-
 	BrightnessAdjustment := gtk.NewAdjustment(50, 0, 100, 1, 0, 0)
 	VolumeAdjustment := gtk.NewAdjustment(50, 0, 100, 1, 0, 0)
 
@@ -89,7 +70,6 @@ func activate(app *gtk.Application) {
 
 	timeLabel := gtk.NewButtonWithLabel("time")
 
-	mainBox.SetStartWidget(menuButton)
 	mainBox.SetCenterWidget(BriScale)
 	mainBox.SetEndWidget(timeLabel)
 
