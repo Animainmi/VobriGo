@@ -74,10 +74,6 @@ func activate(app *gtk.Application) {
 	gtk4layershell.SetAnchor(window, gtk4layershell.LayerShellEdgeTop, true)
 }
 
-func scale_moved() {
-	log.Println("LMAO")
-}
-
 func loadCSS(content string) *gtk.CSSProvider {
 	prov := gtk.NewCSSProvider()
 	prov.ConnectParsingError(func(sec *gtk.CSSSection, err error) {
