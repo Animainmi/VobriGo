@@ -1,5 +1,10 @@
+* {
+  all: unset;
+}
+
 window {
-  all:unset;
+  all: unset;
+  min-height: 20px;
 	background-color: black;
 	color: white;
 	font-size: 9pt;
@@ -8,18 +13,24 @@ window {
 	border-radius: 10px;
 }
 
-scale trough {
+box {
   all: unset;
+}
+
+button {
+  background-color: green;
   min-height: 10px;
+  min-width: 30px;
+}
+
+scale trough {
+  background-color: white;
+  min-height: 10px;
+	border-radius: 5px;
 }
 
 scale highlight {
-  all: unset;
-  background-color: white;
+  background-color: red;
   min-height: 10px;
-}
-
-scale slider {
-  all: unset;
-  margin: 0;
+	border-radius: 5px;
 }
