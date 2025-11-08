@@ -4,7 +4,7 @@
 
 window {
   all: unset;
-  min-height: 20px;
+  min-height: 25px;
 	background-color: black;
 	color: white;
 	font-size: 9pt;
@@ -21,6 +21,9 @@ button {
   background-color: green;
   min-height: 10px;
   min-width: 30px;
+	border: 1px solid white;
+	border-radius: 50px;
+  margin: 5px;
 }
 
 scale trough {

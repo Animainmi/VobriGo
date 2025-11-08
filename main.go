@@ -4,11 +4,13 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
+	"time"
 	"os"
 	"os/exec"
 	"strings"
 
 	"github.com/diamondburned/gotk4-layer-shell/pkg/gtk4layershell"
+	"github.com/diamondburned/gotk4/pkg/core/glib"
 	"github.com/diamondburned/gotk4/pkg/gdk/v4"
 	"github.com/diamondburned/gotk4/pkg/gio/v2"
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
@@ -85,8 +87,11 @@ func activate(app *gtk.Application) {
 		cmd.Run()
 	})
 
-	mainBox.SetEndWidget(BriScale)
+	timeLabel := gtk.NewButtonWithLabel("time")
+
 	mainBox.SetStartWidget(menuButton)
+	mainBox.SetCenterWidget(BriScale)
+	mainBox.SetEndWidget(timeLabel)
 
 	window.SetTitle("gotk4 Example")
 	window.SetChild(mainBox)
@@ -98,6 +103,17 @@ func activate(app *gtk.Application) {
 	gtk4layershell.SetLayer(window, gtk4layershell.LayerShellLayerTop)
 	gtk4layershell.AutoExclusiveZoneEnable(window)
 	gtk4layershell.SetAnchor(window, gtk4layershell.LayerShellEdgeTop, true)
+
+	go func() {
+		for t := range time.Tick(time.Second) {
+			currentTime := t
+			glib.IdleAdd(func() {
+				timeLabel.SetLabel(fmt.Sprintf(
+					"%s", currentTime.Format("15:04"),
+				))
+			})
+		}
+	}()
 }
 
 func loadCSS(content string) *gtk.CSSProvider {
