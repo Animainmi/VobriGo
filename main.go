@@ -4,10 +4,12 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
-	"time"
+	"math"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/diamondburned/gotk4-layer-shell/pkg/gtk4layershell"
 	"github.com/diamondburned/gotk4/pkg/core/glib"
@@ -49,17 +51,7 @@ func activate(app *gtk.Application) {
 	VoScale := gtk.NewScale(gtk.OrientationHorizontal, VolumeAdjustment)
 
 	BriScale.SetHExpand(true)
-	BriScale.ConnectValueChanged(func() {
-		brightnessFormatted := fmt.Sprintf("%d%%", int(BrightnessAdjustment.Value()))
-		cmd := exec.Command("brightnessctl", "set", brightnessFormatted)
-		cmd.Run()
-		realBri := exec.Command("brightnessctl", "get")
-		out, err := realBri.Output()
-		if err != nil {
-			log.Fatalf("Failed to execute command: %v", err)
-		}
-		fmt.Println(string(out))
-	})
+	SetupBrightness(BrightnessAdjustment, BriScale)
 
 	VoScale.SetHExpand(true)
 	VoScale.ConnectValueChanged(func() {
@@ -94,6 +86,38 @@ func activate(app *gtk.Application) {
 			})
 		}
 	}()
+}
+
+func SetupBrightness(adj *gtk.Adjustment, scale *gtk.Scale) {
+	get := func() (current, max float64) {
+		out, _ := exec.Command("brightnessctl", "g").Output()
+		maxOut, _ := exec.Command("brightnessctl", "m").Output()
+		current, _ = strconv.ParseFloat(strings.TrimSpace(string(out)), 64)
+		max, _ = strconv.ParseFloat(strings.TrimSpace(string(maxOut)), 64)
+		return
+	}
+
+	// Initial update
+	if cur, max := get(); max > 0 {
+		adj.SetLower(0)
+		adj.SetUpper(max)
+		adj.SetValue(cur)
+	}
+
+	ticker := time.NewTicker(100 * time.Millisecond)
+	go func() {
+		for range ticker.C {
+			if cur, max := get(); max > 0 {
+				glib.IdleAdd(func() { adj.SetValue(cur) })
+			}
+		}
+	}()
+	scale.Connect("destroy", func() { ticker.Stop() })
+
+	scale.ConnectValueChanged(func() {
+		p := int(math.Max(adj.Value(), 1))
+		exec.Command("brightnessctl", "s", fmt.Sprintf("%d", p), "-q").Run()
+	})
 }
 
 func loadCSS(content string) *gtk.CSSProvider {
